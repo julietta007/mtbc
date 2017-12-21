@@ -63,7 +63,10 @@ writeXY: function() {
 //Draws a retangle
 drawRect: function(x,y,h,w) {
   ctx.fillStyle = this.randColor();
+  ctx.strokeStyle =this.randColor();
+
   ctx.fillRect(x1, y1, (x2-x1), (y2-y1));
+  ctx.strokeRect(x1, y1, (x2-x1), (y2-y1));
 },
 
 //Draws a line beginning to end
@@ -76,14 +79,17 @@ ctx.stroke();
 },
 
 drawCircle: function() {
-  ctx.fillstyle = this.randColor();
+  ctx.fillStyle = this.randColor();
+  ctx.strokeStyle = this.randColor();
 
+//Calculate the radius using Pythagoreams theorem
     let a = (x1-x2);
     let b = (y1-y2);
     let radius = Math.sqrt(a*a + b*b);
 
   ctx.beginPath();
   ctx.arc(x1, y1, radius, 0, 2 * Math.PI);
+  ctx.fill();
   ctx.stroke();
   },
 
@@ -106,10 +112,6 @@ draw: function(){
 //Returns the canvas object
     getCanvas: function(){
       return canvas;
-    },
-//Returns the canvas object
-getCanvas: function(){
-  return canvas;
 },
     init: function() {
       canvas.height = mHeight;
@@ -131,7 +133,7 @@ document.getElementById('btnLine').addEventListener('click', function(){
   draw.setShape('line');
 });
 
-//Choose to draw a line
+//Choose to draw a circle
 document.getElementById('btnCircle').addEventListener('click', function(){
   draw.setShape('circle');
 });
