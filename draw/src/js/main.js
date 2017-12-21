@@ -67,11 +67,13 @@ drawRect: function(x,y,h,w) {
 
 //Draws a selected Shape
 draw: function(){
+  ctx.restore();
   if(shape==='rectangle'){
     this.drawRect();
   }else{
     alert('Please choose a shape');
   }
+  ctx.save();
 },
 
 //Returns the canvas object
