@@ -12,6 +12,12 @@ ctx = canvas.getContext('2d'),
 //Create the initial bounding box
 rect = canvas.getBoundingClientRect(),
 
+//Create a triangle
+triangle = document.getElementById('canvas');
+if (canvas.getContext) {
+  ctx = canvas.getContext('2d');
+}
+
 //Curent x,y cords
 x=0,
 y=0,
@@ -24,11 +30,29 @@ y1=0,
 x2=0,
 y2=0,
 
+lx=0,
+ly=0,
+
 //what shape are we drawing
-shape='';
+shape='',
+
+//Have we started Drawing yet
+isDrawing=false;
 
 
   return{
+
+setIsDrawing: function(bool) {
+  isDrawing = bool;
+  },
+
+getIsDrawing:function() {
+  return isDrawing;
+  },
+
+    getShape: function() {
+      return shape;
+    },
 
     randColor: function() {
       return '#' + Math.floor(Math.random()*16777215).toString(16);
@@ -40,8 +64,13 @@ setShape(shp) {
 },
     //Set the x,y cords
 setXY: function(evt) {
+
+lx = x;
+ly = y;
+
   x = (evt.clientX - rect.left) - canvas.offsetLeft;
   y = (evt.clientY - rect.top);
+  console.log({'x':x, 'y':y, 'lx': lx, 'ly':ly});
 },
 
 setStart: function() {
@@ -93,17 +122,38 @@ drawCircle: function() {
   ctx.stroke();
   },
 
-//draws a selected Shape
-draw: function(){
+  drawPath: function(){
+  ctx.strokeStyle = this.randColor();
+  ctx.beginPath();
+  ctx.moveTo(lx,ly);
+  ctx.lineTo(x,y);
+  ctx.stroke();
+},
 
-  ctx.restore();
-  if(shape==='rectangle' ){
+  ctx.beginPath();
+  ctx.moveTo(75,50);
+  ctx.lineTo(100,75);
+  ctx.lineTo(100,25);
+  ctx.fill();
+ }
+}
+
+//draws a selected Shape
+  draw: function(){
+
+    ctx.restore();
+    if( shape==='rectangle' ){
     this.drawRect();
-  }else if(shape==='line' ){
-      this.drawLine();
-  }else if(shape==='circle' ){
-        this.drawCircle();
+  }else if( shape==='line' ){
+    this.drawLine();
+  }else if( shape==='circle' ){
+    this.drawCircle();
+  }else if( shape==='path' ){
+    this.drawPath();
+  }else if( shape==='triangle' ){
+      this.drawTriangle();
     }else{
+
     alert('Please choose a shape');
   }
   ctx.save();
@@ -138,19 +188,38 @@ document.getElementById('btnCircle').addEventListener('click', function(){
   draw.setShape('circle');
 });
 
+//Choose to draw a triangle
+document.getElementById('btnTriangle').addEventListener('click', function(){
+  draw.setShape('triangle');
+});
+
+//Choose to draw a circle
+document.getElementById('btnPath').addEventListener('click', function(){
+  draw.setShape('path');
+});
+
 //Track the x,y position
 draw.getCanvas().addEventListener('mousemove', function(evt){
   draw.setXY(evt);
   draw.writeXY();
+
+    if(draw.getShape()==='path' && draw.getIsDrawing()===true){
+      draw.draw();
+
+  if(draw.getShape()==='triangle' && draw.getIsDrawing()===true){
+    draw.draw();
+  }
 });
 
 //Set starting the x,y position
 draw.getCanvas().addEventListener('mousedown', function(){
   draw.setStart();
+  draw.setIsDrawing(true);
 });
 
 //Set ending the x,y position
 draw.getCanvas().addEventListener('mouseup', function(){
   draw.setEnd();
   draw.draw();
+  draw.setIsDrawing(false);
 });
